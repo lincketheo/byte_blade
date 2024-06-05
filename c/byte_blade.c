@@ -1,16 +1,13 @@
 
 #include <complex.h>
 #include <getopt.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 static struct option long_options[] = {
-  { "dtype", required_argument, 0, 'I' },
-  { "file", required_argument, 0, 'f' },
-  { "start", required_argument, 0, 's' },
-  { "end", required_argument, 0, 'e' },
-  { "help", required_argument, 0, 'h' },
+  { "help", no_argument, 0, 'h' },
 };
 
 static FILE* fp;
@@ -26,23 +23,28 @@ static void teardown()
     free(buffer);
 }
 
+// TODO - add sign flag
 static void print_help(char* exe)
 {
-  printf("\n\nUsage: %s\n", exe);
+  printf("\n\nUsage: %s file start end dtype [--help]\n", exe);
   printf("Options:\n");
-  printf("    --file  - Input File Name \n");
-  printf("    --start - Output File Name \n");
-  printf("    --end   - end index\n");
-  printf("    --dtype - Format type to read in\n");
+  printf("    file  - Input File Name \n");
+  printf("    start - Output File Name \n");
+  printf("    end   - end index\n");
+  printf("    dtype - Format type to read in\n");
   printf("    --help  - Print this help menu\n");
   printf("input_fmt allowed options:\n");
   printf("  CF - Complex float (%zu bytes)\n", sizeof(complex float));
+  printf("  SL - Unsigned Integers (%zu bytes)\n", sizeof(uint32_t));
+  printf("  SB - Unsigned Bytes (%zu bytes)\n", sizeof(uint8_t));
   printf("\n\n");
   return;
 }
 
 enum dtype {
   CF = 0,
+  SL = 1,
+  SB = 2,
 };
 
 typedef struct {
@@ -71,6 +73,20 @@ void print_cf_array(complex float* arr, size_t len)
   }
 }
 
+void print_sl_array(uint32_t* arr, size_t len)
+{
+  for (int i = 0; i < len; ++i) {
+    printf("%d\n", arr[i]);
+  }
+}
+
+void print_sb_array(uint8_t* arr, size_t len)
+{
+  for (int i = 0; i < len; ++i) {
+    printf("%d\n", arr[i]);
+  }
+}
+
 int main(int argc, char** argv)
 {
   atexit(teardown);
@@ -84,18 +100,10 @@ int main(int argc, char** argv)
     .dtype = CF
   };
 
-  while ((c = getopt_long(argc, argv, "I:f:", long_options, &ind)) > 0) {
+  while ((c = getopt_long(argc, argv, "I:s:e:h", long_options, &ind)) > 0) {
     switch (c) {
     case 'I':
-      if (strcmp(optarg, "CF") == 0) {
-        args.dtype = CF;
-      } else {
-        printf("Failed to parse data type: %s\n", optarg);
-        return 1;
-      }
-      break;
-    case 'f':
-      args.filename = optarg;
+
       break;
     case 's':
       args.start = atol(optarg);
@@ -112,13 +120,28 @@ int main(int argc, char** argv)
     }
   }
 
-  if (args.end <= args.start) {
-    printf("Start: %zu must be before end: %zu\n", args.start, args.end);
+  if (argc != 5) {
     print_help(argv[0]);
     return 1;
   }
-  if (args.filename == NULL) {
-    printf("Please supply a file name\n");
+
+  args.filename = argv[1];
+  args.start = atol(argv[2]);
+  args.end = atol(argv[3]);
+  
+  if (strcmp(argv[4], "CF") == 0) {
+    args.dtype = CF;
+  } else if (strcmp(argv[4], "SL") == 0) {
+    args.dtype = SL;
+  } else if (strcmp(argv[4], "SB") == 0) {
+    args.dtype = SB;
+  } else {
+    printf("Failed to parse data type: %s\n", optarg);
+    return 1;
+  }
+
+  if (args.end <= args.start) {
+    printf("Start: %zu must be before end: %zu\n", args.start, args.end);
     print_help(argv[0]);
     return 1;
   }
@@ -131,7 +154,6 @@ int main(int argc, char** argv)
   }
 
   if (args.dtype == CF) {
-
     b_capacity = (args.end - args.start);
     complex float* typed_buffer = malloc(sizeof *typed_buffer * b_capacity);
     buffer = typed_buffer;
@@ -143,6 +165,30 @@ int main(int argc, char** argv)
 
     b_size = fread(buffer, sizeof *typed_buffer, b_capacity, fp);
     print_cf_array(typed_buffer, b_size);
+  } else if (args.dtype == SL) {
+    b_capacity = (args.end - args.start);
+    uint32_t* typed_buffer = malloc(sizeof *typed_buffer * b_capacity);
+    buffer = typed_buffer;
+
+    if (fseek(fp, args.start * sizeof *typed_buffer, SEEK_CUR) != 0) {
+      printf("Failed to seek file\n");
+      return 1;
+    }
+
+    b_size = fread(buffer, sizeof *typed_buffer, b_capacity, fp);
+    print_sl_array(typed_buffer, b_size);
+  } else if (args.dtype == SB) {
+    b_capacity = (args.end - args.start);
+    uint8_t* typed_buffer = malloc(sizeof *typed_buffer * b_capacity);
+    buffer = typed_buffer;
+
+    if (fseek(fp, args.start * sizeof *typed_buffer, SEEK_CUR) != 0) {
+      printf("Failed to seek file\n");
+      return 1;
+    }
+
+    b_size = fread(buffer, sizeof *typed_buffer, b_capacity, fp);
+    print_sb_array(typed_buffer, b_size);
   } else {
     printf("Unimplemented error\n");
     return 1;
