@@ -1,0 +1,12 @@
+- Default start and ends:
+  - change to syntax start:end
+  - Supported:
+    - :end
+    - start:
+    - :-end
+    - -start:
+  - If none supplied print entire file
+- Clean up duplicate code
+- Support for different data types
+- Data type formatting for complex floats
+- Default data type SB

@@ -1,12 +1,12 @@
 
 
-all: byte_blade
+all: bb
 
 clean:
-	rm -f byte_blade
+	rm -f bb
 
-byte_blade:
-	gcc ./c/byte_blade.c -lm -o byte_blade
+bb:
+	gcc ./c/byte_blade.c -lm -o bb
 
-install: byte_blade ~/.local/bin
-	cp byte_blade ~/.local/bin
+install: bb ~/.local/bin
+	cp bb ~/.local/bin
