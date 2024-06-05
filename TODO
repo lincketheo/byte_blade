@@ -10,3 +10,7 @@
 - Support for different data types
 - Data type formatting for complex floats
 - Default data type SB
+
+
+- Tool idea:
+  - Split data up into subsets - you could chop things up in bb too
