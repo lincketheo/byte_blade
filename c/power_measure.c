@@ -26,7 +26,7 @@ static void teardown()
 
 static void print_help(char* exe)
 {
-  printf("\n\nUsage: %s file start end dtype [--help]\n", exe);
+  printf("\n\nUsage: %s file [--help]\n", exe);
   printf("Options:\n");
   printf("    file      - Input File Name \n");
   printf("    --help    - Print this help menu\n");
