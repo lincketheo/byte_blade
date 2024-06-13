@@ -29,13 +29,11 @@ static void teardown()
 // TODO - add sign flag
 static void print_help(char* exe)
 {
-  printf("\n\nUsage: %s file start end dtype [--help]\n", exe);
+  printf("\n\nUsage: %s file[start:end] [dtype] [--hex|--bin|--dec] [--help]\n", exe);
   printf("Options:\n");
-  printf("    file      - Input File Name \n");
-  printf("    start     - Output File Name \n");
-  printf("    end       - end index\n");
-  printf("    dtype     - Format type to read in\n");
-  printf("    --help    - Print this help menu\n");
+  printf("    file[start:end]     - Input File Name. Indexing is the same as numpy array indexing. If start:end aren't included, prints the entire file\n");
+  printf("    dtype               - Format type to read in. Defaults to U8\n");
+  printf("    --help              - Print this help menu\n");
   printf("\n");
   printf("    Print Modes: (Higher priority overrides lower priority). Defaults to dec\n");
   printf("    --hex     - Prints output in hex. Priority: 0\n");
@@ -43,9 +41,26 @@ static void print_help(char* exe)
   printf("    --dec     - Prints output in dec mode. Priority: 2\n");
   printf("\n");
   printf("input_fmt allowed options:\n");
-  printf("  CF - Complex float (%zu bytes)\n", sizeof(complex float));
-  printf("  SL - Unsigned Integers (%zu bytes)\n", sizeof(uint32_t));
-  printf("  SB - Unsigned Bytes (%zu bytes)\n", sizeof(uint8_t));
+  printf("  U8      - (%zu bytes)\n", sizeof(uint8_t));
+  printf("  U16     - (%zu bytes)\n", sizeof(uint16_t));
+  printf("  U32     - (%zu bytes)\n", sizeof(uint32_t));
+  printf("  U64     - (%zu bytes)\n", sizeof(uint64_t));
+  printf("  I8      - (%zu bytes)\n", sizeof(int8_t));
+  printf("  I16     - (%zu bytes)\n", sizeof(int16_t));
+  printf("  I32     - (%zu bytes)\n", sizeof(int32_t));
+  printf("  I64     - (%zu bytes)\n", sizeof(int64_t));
+  printf("  F32     - (%zu bytes)\n", sizeof(float));
+  printf("  F64     - (%zu bytes)\n", sizeof(double));
+  printf("  CU8     - (%zu bytes)\n", sizeof(unsigned complex char));
+  printf("  CU16    - (%zu bytes)\n", sizeof(unsigned complex short));
+  printf("  CU32    - (%zu bytes)\n", sizeof(unsigned complex int));
+  printf("  CU64    - (%zu bytes)\n", sizeof(unsigned complex long));
+  printf("  CI8     - (%zu bytes)\n", sizeof(complex char));
+  printf("  CI16    - (%zu bytes)\n", sizeof(complex short));
+  printf("  CI32    - (%zu bytes)\n", sizeof(complex int));
+  printf("  CI64    - (%zu bytes)\n", sizeof(complex long));
+  printf("  CF32    - (%zu bytes)\n", sizeof(complex float));
+  printf("  CF64    - (%zu bytes)\n", sizeof(complex double));
   printf("\n\n");
   return;
 }
@@ -66,8 +81,8 @@ typedef struct {
   enum dtype dtype;
   enum mode mode;
   char* filename;
-  size_t start;
-  size_t end;
+  int64_t start;
+  int64_t end;
   int hex;
   int bin;
   int dec;
