@@ -9,3 +9,4 @@ bb:
 
 install: bb ~/.local/bin
 	cp bb ~/.local/bin
+

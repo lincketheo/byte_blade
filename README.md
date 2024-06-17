@@ -1,9 +1,10 @@
 # Byte Blade
+
 A binary data analyzer with numpy array like syntax.
 
 Have a data file and you don't want to open a python shell and use numpy? Not to worry, byte\_blade is here!
 
-## Installing the [latest release]()
+## Installing the [latest release](https://github.com/lincketheo/byte_blade/releases/tag/v0.0.1)
 ```
 $ wget https://github.com/lincketheo/byte_blade/releases/download/v0.0.1/bb-v0.0.1-linux-x86_64.tar.gz
 $ tar xvf bb-v0.0.1-linux-x86_64.tar.gz
@@ -17,7 +18,7 @@ $ ./bb --help
 ```
 
 ## Usage:
-By default byte blade assumes `uint8\_t` data in dec mode. So if you just run:
+By default byte blade assumes `uint8_t` data in dec mode. So if you just run:
 ```
 $ ./bb <filename>
 ```
@@ -38,7 +39,7 @@ If you want to see your data in hex format, you can run with the `--hex` flag (t
 $ ./bb <filename> --hex CF64
 ```
 
-You can also specify the endianess of your output:
+You can also specify the endianess of your output. By default, it's your system's endianess:
 
 ```
 $ ./bb <filename> --hex --big CF64
@@ -85,3 +86,4 @@ Also Prints all elements
 ```
 $ ./bb <filename> --hex --big CF64
 ```
+
