@@ -3,6 +3,12 @@ A binary data analyzer with numpy array like syntax.
 
 Have a data file and you don't want to open a python shell and use numpy? Not to worry, byte\_blade is here!
 
+## Installing the [latest release]()
+```
+$ wget https://github.com/lincketheo/byte_blade/releases/download/v0.0.1/bb-v0.0.1-linux-x86_64.tar.gz
+$ tar xvf bb-v0.0.1-linux-x86_64.tar.gz
+```
+
 ## Building:
 ```sh
 $ make clean
