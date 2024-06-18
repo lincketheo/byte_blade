@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.2] - 2024-
+## [0.1.0-Unreleased] - 2024-
 ### Added
 - Support for printing chars
 
