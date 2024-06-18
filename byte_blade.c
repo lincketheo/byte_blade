@@ -11,6 +11,7 @@
 #include <strings.h>
 
 enum dtype {
+  CHAR,
   U8,
   U16,
   U32,
@@ -62,6 +63,9 @@ typedef struct {
 size_t span(enum dtype dtype)
 {
   switch (dtype) {
+  case CHAR: {
+    return sizeof(char);
+  }
   case U8: {
     return sizeof(uint8_t);
   }
@@ -118,6 +122,7 @@ static void print_help(char* exe)
   printf("    --dec               - Prints output in dec mode. Priority: 2\n");
   printf("\n");
   printf("input_fmt allowed options:\n");
+  printf("  CHAR                  - (%zu bytes)\n", span(CHAR));
   printf("  U8                    - (%zu bytes)\n", span(U8));
   printf("  U16                   - (%zu bytes)\n", span(U16));
   printf("  U32                   - (%zu bytes)\n", span(U32));
@@ -157,6 +162,11 @@ void print_hex(const void* ptr, size_t size, enum endianess endianess)
     printf("%02X ", byte);
   }
   printf("\n");
+}
+
+void print_CHAR(char* data, size_t i, enum endianess endianess)
+{
+  printf("%c\n", data[i]);
 }
 
 void print_U8(uint8_t* data, size_t i, enum endianess endianess)
@@ -316,6 +326,10 @@ void print_CF128(complex double* data, size_t i, enum endianess endianess)
 void print_dec_mode(void* data, size_t i, enum dtype dtype, enum endianess endianess)
 {
   switch (dtype) {
+  case CHAR: {
+    print_CHAR(data, i, endianess);
+    break;
+  }
   case U8: {
     print_U8(data, i, endianess);
     break;
@@ -675,6 +689,8 @@ int parse_arg(cli_args* ret, char* arg)
     ret->little = 1;
   } else if (strcmp(arg, "--big") == 0) {
     ret->big = 1;
+  } else if (strcmp(arg, "CHAR") == 0) {
+    ret->dtype = CHAR;
   } else if (strcmp(arg, "U8") == 0) {
     ret->dtype = U8;
   } else if (strcmp(arg, "U16") == 0) {
