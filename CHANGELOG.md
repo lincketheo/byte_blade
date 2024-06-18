@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.2] - 2024-
+### Added
+- Support for printing chars
+
 ## [0.0.1] - 2024-06-17
 ### Added
 - Initial release of bb
